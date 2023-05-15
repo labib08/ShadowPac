@@ -1,0 +1,23 @@
+import bagel.Window;
+import bagel.util.Point;
+import bagel.Font;
+
+public class EndMessage {
+    private final int WIN_SCORE_1 = 800;
+    private final Font gameNameFont = new Font("res/FSO8BITR.TTF", 64);
+    private double fontWidth = gameNameFont.getWidth("res/FSO8BITR.TTF");
+    private final String GAME_OVER_TEXT = "GAME OVER!";
+    private final String WELL_DONE_TEXT = "WELL DONE!";
+    private final Point END_MESSAGE_TEXT_POINT = new Point(Window.getWidth() - fontWidth + 64, Window.getHeight() / 2);
+
+    protected void update(int score) {
+        // If the player eats up all the dots then "Well Done!" is written on the
+        // screen,
+        // otherwise "Game Over" is shown.
+        if (score == WIN_SCORE_1) {
+            gameNameFont.drawString(WELL_DONE_TEXT, END_MESSAGE_TEXT_POINT.x, END_MESSAGE_TEXT_POINT.y);
+        } else {
+            gameNameFont.drawString(GAME_OVER_TEXT, END_MESSAGE_TEXT_POINT.x, END_MESSAGE_TEXT_POINT.y);
+        }
+    }
+}
