@@ -7,9 +7,10 @@ public class Level0EndMessage {
     private final Font gameNameFont = new Font("res/FSO8BITR.TTF", 64);
     private double fontWidth = gameNameFont.getWidth("res/FSO8BITR.TTF");
     private final String LEVEL_COMPLETE_TEXT = "LEVEL COMPLETE!";
-    private final Point END_MESSAGE_TEXT_POINT = new Point(Window.getWidth() - fontWidth - 70, Window.getHeight() / 2);
+    private final Point END_MESSAGE_TEXT_POINT = new Point(Window.getWidth() - fontWidth - 70, Window.getHeight() / 2.0);
 
-     /**
+    /**
+     * Performs state update.
      * Draws the Level0EndMessage.
      */
     protected void update() {

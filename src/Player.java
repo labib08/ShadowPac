@@ -25,37 +25,75 @@ public class Player {
     private int score = 0;
     private boolean isFrenzy = false;
 
+    /**
+     * Constructs a new Player object and resets the position of this Player object.
+     */
     public Player() {
         resetPosition();
     }
 
+    /**
+     * Setter method.
+     * Sets the current remaining lives of the player.
+     * @param lives This parameter is the remaining lives of the player.
+     */
     public void setLives(int lives) {
         this.lives = lives;
     }
 
+    /**
+     * Getter method.
+     * @return This method returns the lives remaining of the player.
+     */
     public int getLives() {
         return lives;
     }
 
+    /**
+     * Setter method.
+     * This method sets the current score of the player.
+     * @param score This parameter is the score gained by the player.
+     */
     public void setScore(int score) {
         this.score = score;
     }
 
+    /**
+     * Getter method.
+     * @return This method returns the score gained by the player.
+     */
     public int getScore() {
         return score;
     }
 
-    public void incrementScore() {
-        score += StationaryEntity.POINTS;
-    }
+    /**
+     * This method increases the points of the player by 10 if it collides with a dot.
+     */
+    public void incrementScoreDot() {score += Dot.POINTS;}
 
+    /**
+     * This method increase the points of the player by 20 if it collides with a cherry.
+     */
+    public void incrementScoreCherry(){ score += Cherry.POINTS;}
+
+    /**
+     * This method increases the points of the player by 30 if it collides with the enemy during frenzy mode.
+     */
     public void incrementScoreEnemy() {
         score += Enemy.POINTS;
+    }
 
+    /**
+     * This method reduces the lives of the player if it collides with the enemy.
+     */
+    public void reduceLives() {
+        lives--;
     }
 
     /**
      * Sets and records the initial coordinates of the Pacman
+     * @param playerX This parameter is the X-Coordinate of the player.
+     * @param playerY This parameter is the Y-Coordinate of the player.
      */
     public void setPosition(double playerX, double playerY) {
         this.playerX = playerX;
@@ -65,7 +103,7 @@ public class Player {
     }
 
     /**
-     * Resets the position of the player to its initial Coordinates
+     * This method resets the position of the player to its initial Coordinates
      */
     public void resetPosition() {
         this.playerX = initialPosX;
@@ -75,39 +113,52 @@ public class Player {
     /**
      * When the player intersects with a wall, the player's position is reset to its
      * position just before collision.
+     * @param playerX This parameter is the X-Coordinate of the player.
+     * @param playerY This parameter is the Y-Coordinate of the player.
      */
     public void stopIntersection(double playerX, double playerY) {
         this.playerX = playerX;
         this.playerY = playerY;
     }
 
+    /**
+     * Setter method.
+     * This method sets the variable isFrenzy.
+     * @param isFrenzy This parameter determines whether the game is in frenzy mode.
+     */
     public void setFrenzy(boolean isFrenzy) {
         this.isFrenzy = isFrenzy;
     }
 
+    /**
+     * Getter method.
+     * @return Returns the variable isFrenzy which determines whether the game is in frenzy mode.
+     */
     public boolean getFrenzy() {
         return isFrenzy;
     }
 
     /**
-     * Assumes the PacMan is a rectangle
+     * Getter method
+     * @return This method returns the rectangle box bounding the player, PacMan.
      */
     public Rectangle getPlayerRectangle() {
         return new Rectangle(playerX, playerY, playerWidth, playerHeight);
     }
 
     /**
-     * Method to get the last point of the player
-     * just before collision with the wall.
+     * Getter method.
+     * @return This method returns the last point of the player just before the collision.
      */
-
     public Point getLastPoint() {
         return new Point(lastPlayerX, lastPlayerY);
     }
 
     /**
-     * Controls the movement of the player with keys UP, DOWN LEFT AND RIGHT
+     * Method that performs state update
+     * This method controls the movement of the player with keys UP, DOWN LEFT AND RIGHT
      * and rotates the player according to its direction
+     * @param input This parameter gives access to input devices (keyboard and mouse).
      */
     protected void update(Input input) {
         // Records the previous X and Y coordinates of the player.
@@ -131,9 +182,8 @@ public class Player {
             playerY += STEP_SIZE;
             angle = Math.PI / 2;
         }
-        /**
-         * Shifts between two images of the Pacman every 15 frames
-         */
+
+        // Shifts between two images of the Pacman every 15 frames.
         frame++;
         if ((frame % 15) == 0) {
             x++;
@@ -143,6 +193,7 @@ public class Player {
         } else {
             playerImageOpen.drawFromTopLeft(playerX, playerY, options.setRotation(angle));
         }
+        // The frenzy mode lasts for 1000 frames.
         if (isFrenzy) {
             if (frameFrenzy == MAX_FRENZY_FRAME) {
                 isFrenzy = false;

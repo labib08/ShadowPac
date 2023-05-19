@@ -16,7 +16,6 @@ public class ShadowPac extends AbstractGame {
     private final static String GAME_TITLE = "SHADOW PAC";
     private final int WIN_SCORE_0 = 1210;
     private final int WIN_SCORE_1 = 800;
-    private final int GHOST_ARRAY_SIZE = 266;
     public final Player player = new Player();
     private final RedGhost redGhost = new RedGhost("res/ghostRed.png");
     private final Ghost ghost = new Ghost();
@@ -50,15 +49,18 @@ public class ShadowPac extends AbstractGame {
 
     private String[] levels = { "res/level0.csv", "res/level1.csv" };
 
+    /**
+     * Constructs a new ShadowPac game object, and refers to its superclass.
+     */
+
     public ShadowPac() {
         super(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_TITLE);
     }
 
     /**
      * Method used to read file and create objects. It gets
-     * the coordinates of Player, Walls, Dots and Ghosts.
+     * the coordinates of Player, Walls, Dots, Ghosts, Cherries and pellet.
      */
-
     private void readCSV() {
         try (Scanner file = new Scanner(new FileReader(levels[currLevel]))) {
             while (file.hasNextLine()) {
@@ -75,7 +77,13 @@ public class ShadowPac extends AbstractGame {
     }
 
     /**
-     * Method to set up the coordinates of the Player, Walls, Dots and Ghosts.
+     * This method sets up coordinates of the Player, Walls, Dots, Pellet, Cherries
+     * and Ghosts.
+     * 
+     * @param entity      This parameter is the game entity, eg: Player, Walls,
+     *                    Dots, Pellet, Cherries and Ghosts.
+     * @param xCoordinate This parameter is the X-Coordinate of the game entity.
+     * @param yCoordinate This parameter is the Y-Coordinate of the game entity.
      */
     public void setBoardDetails(String entity, double xCoordinate, double yCoordinate) {
         if (entity.equals("Player")) {
@@ -109,6 +117,9 @@ public class ShadowPac extends AbstractGame {
     /**
      * Performs a state update.
      * Allows the game to exit when the escape key is pressed.
+     * 
+     * @param input This parameter gives access to input devices (keyboard and
+     *              mouse).
      */
     @Override
     protected void update(Input input) {
@@ -119,9 +130,8 @@ public class ShadowPac extends AbstractGame {
             Window.close();
         }
         BACKGROUND_IMAGE.draw(Window.getWidth() / 2.0, Window.getHeight() / 2.0);
-        /**
-         * Decides and sets up the screen that is going to be rendered.
-         */
+
+        // Decides and sets up the screen that is going to be rendered.
         if (currScreen == 0 || currScreen == 1) {
             setGameScreen(input);
         }
@@ -139,12 +149,20 @@ public class ShadowPac extends AbstractGame {
         }
     }
 
-    // Draws the score of the player.
+    /**
+     * This method draws the current score of the player.
+     * 
+     * @param score This parameter is the points gained by the player.
+     */
     public void drawScore(int score) {
         scoreFont.drawString("SCORE " + score, SCORE_POINT.x, SCORE_POINT.y);
     }
 
-    // Draws the remaining lives of the player.
+    /**
+     * This method draws the remaining lives of the player.
+     * 
+     * @param lives This parameter is the number of lives remaining for the player.
+     */
     public void drawHeart(int lives) {
         if (lives == 3) {
             heartImage.drawFromTopLeft(HEART_POINT_ONE.x, HEART_POINT_ONE.y);
@@ -169,7 +187,6 @@ public class ShadowPac extends AbstractGame {
         flagCsv = true;
         currLevel = 1;
         ghost.resetGhost();
-        redGhost.resetGhost();
         dot.resetStatEntity();
         wall.resetStatEntity();
         player.setScore(0);
@@ -177,13 +194,19 @@ public class ShadowPac extends AbstractGame {
     }
 
     /**
-     * The board for the current level is drawn.
+     * This method draws the board of the current level.
+     * 
+     * @param input  This parameter gives access to input devices (keyboard and
+     *               mouse).
+     * @param player This parameter is the object of the class Player, which is
+     *               represented by the PacMan.
+     * @param lives  This parameter is the number of lives remaining for the player.
+     * @param score  This parameter is the points gained by the player.
      */
     public void drawBoard(Input input, Player player, int lives, int score) {
         drawScore(score);
         drawHeart(lives);
         player.update(input);
-
         dot.update(player, blueGhost, redGhost, greenGhost, pinkGhost);
         redGhost.update(player);
         blueGhost.update(player);
@@ -198,7 +221,10 @@ public class ShadowPac extends AbstractGame {
     }
 
     /**
-     * Decides which screen to display
+     * This method decides which screen to display
+     * 
+     * @param input This parameter gives access to input devices (keyboard and
+     *              mouse).
      */
     public void setGameScreen(Input input) {
         // A flag variable is used so that the game begins when the SPACE key is
@@ -215,9 +241,9 @@ public class ShadowPac extends AbstractGame {
             if ((lives == 0) || (score == WIN_SCORE_1 && currLevel == 1)) {
                 endMessage.update(score);
                 // If the player eats up all the dots in level 0, the player advances to the
-                // next level. The first level can also be skipped by pressing W.
+                // next level. The next level can also be started by pressing W.
                 // The board is cleared and redrawn for the next level.
-            } else if ((score == WIN_SCORE_0 && currLevel == 0) || input.wasPressed(Keys.W)) {
+            } else if ((score == WIN_SCORE_0 && currLevel == 0) || (input.wasPressed(Keys.W))) {
                 clearBoard();
             } else {
                 drawBoard(input, player, lives, score);
@@ -227,6 +253,11 @@ public class ShadowPac extends AbstractGame {
         }
     }
 
+    /**
+     * This method is the main method which creates an object of the class ShadowPac
+     * and makes use
+     * of the method run.
+     */
     public static void main(String[] args) {
         ShadowPac game = new ShadowPac();
         game.run();
